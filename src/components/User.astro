@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import goAvatar from '../assets/go_avatar.png'
+
+const { name, handle, level, profileImageUrl } = Astro.props;
+
+const rolesAvatars = [
+  "https://www.boot.dev/_nuxt/0.Cd4Q6yKn.png",
+  "https://www.boot.dev/_nuxt/1.D8uhhud8.png",
+  "https://www.boot.dev/_nuxt/2.DxdjaRi_.png",
+  "https://www.boot.dev/_nuxt/3.DDWkpsFD.png",
+  "https://www.boot.dev/_nuxt/4.xMhV6BS_.png",
+  "https://www.boot.dev/_nuxt/5.B754pGI7.png",
+  "https://www.boot.dev/_nuxt/6.Bq0Kqg5z.png",
+  "https://www.boot.dev/_nuxt/7.B7wjWy-0.png",
+  "https://www.boot.dev/_nuxt/8.BfXR210R.png",
+  "https://www.boot.dev/_nuxt/9.B-zPuvyH.png",
+];
+
+const roleImage = rolesAvatars[Math.floor(level / 10) - 1] || "";
+---
+
+<div class="flex justify-center gap-5 text-left">
+  <div class="">
+    {
+      roleImage && (
+        <img
+          src={roleImage}
+          width="140"
+          height="140"
+          class="absolute block rounded-full ml-[-35px] -mt-[35px]"
+          alt=" "
+        />
+      )
+    }
+    <Image
+      src={profileImageUrl !== ""
+      ? profileImageUrl
+      : goAvatar}
+      alt=" "
+      width="70"
+      height="70"
+      class="block rounded-full"
+    />
+  </div>
+  <div>
+    <div class="text-white text-[34px] font-medium">
+      {name}
+    </div>
+    <div class="text-white text-base font-normal">
+      @{handle}
+    </div>
+  </div>
+</div>

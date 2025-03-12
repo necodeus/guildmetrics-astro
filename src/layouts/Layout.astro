@@ -1,22 +1,96 @@
+---
+import NavigationDesktop from "../components/NavigationDesktop.astro";
+import NavigationMobile from "../components/NavigationMobile.astro";
+import "../styles/global.css";
+
+const { title } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title} - guildmetrics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/0.Cd4Q6yKn.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/1.D8uhhud8.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/2.DxdjaRi_.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/3.DDWkpsFD.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/4.xMhV6BS_.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/5.B754pGI7.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/6.Bq0Kqg5z.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/7.B7wjWy-0.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/8.BfXR210R.png"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://www.boot.dev/_nuxt/9.B-zPuvyH.png"
+    />
+  </head>
+  <body class="bg-[#090909] font-sans" style="font-family: 'Jost', sans-serif;">
+    <NavigationDesktop />
+    <NavigationMobile />
+    <div style="padding-top: 70px;"></div>
+    <slot />
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  .gold {
+    color: #ffd700;
+  }
+  .silver {
+    color: #c0c0c0;
+  }
+  .bronze {
+    color: #8a3e08;
+  }
+  .gray {
+    color: #525252;
+  }
 </style>

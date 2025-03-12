@@ -1,0 +1,26 @@
+<div
+  id="mobileNav"
+  style="border-left: 1px solid #2525259e;"
+  class="fixed top-0 right-0 h-full w-64 transform translate-x-full transition-transform duration-300 sm:hidden z-[1] backdrop-blur bg-[#000000b2]"
+>
+  <nav class="flex flex-col gap-5 px-5 py-3 mt-16 text-[20px]">
+    <a href="/" class="text-white">Gildia</a>
+    <a href="/leaders" class="text-white">Liderzy</a>
+    <a href="/achievements" class="text-white">Osiągnięcia</a>
+    <a href="/courses" class="text-white">Kursy</a>
+  </nav>
+</div>
+
+<script>
+  window.addEventListener("toggleMobileNav", () => {
+    const mobileNav = document.getElementById("mobileNav");
+
+    if (mobileNav?.classList.contains("translate-x-full")) {
+      mobileNav?.classList.remove("translate-x-full");
+      mobileNav?.classList.add("translate-x-0");
+    } else {
+      mobileNav?.classList.remove("translate-x-0");
+      mobileNav?.classList.add("translate-x-full");
+    }
+  });
+</script>

@@ -1,0 +1,24 @@
+---
+const {
+    imageURL,
+    title,
+    description
+} = Astro.props
+
+console.log(Astro.props);
+---
+<div class="flex items-center gap-2.5">
+  <div>
+    <img
+      class="block"
+      src={imageURL}
+      width="40"
+      height="40"
+      alt={title}
+    />
+  </div>
+  <div>
+    <div class="font-bold">{title}</div>
+    <div>{description}</div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+---
+import Logo from "./Logo.astro";
+---
+<div
+  style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #2525259e;"
+  class="backdrop-blur fixed top-0 left-0 w-full z-50 bg-[#000000b2] z-[1]"
+>
+  <nav class="max-w-[1200px] mx-auto px-5 flex items-center justify-between">
+    <Logo />
+
+    <div class="hidden sm:flex gap-5">
+      <a href="/" class="text-white">Gildia</a>
+      <a href="/leaders" class="text-white">Liderzy</a>
+      <a href="/achievements" class="text-white">Osiągnięcia</a>
+      <a href="/courses" class="text-white">Kursy</a>
+    </div>
+
+    <button id="hamburger" class="sm:hidden text-white focus:outline-none">
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </nav>
+</div>
+
+<script>
+  const hamburger = document.getElementById("hamburger");
+  hamburger?.addEventListener("click", () => {
+    window.dispatchEvent(new CustomEvent("toggleMobileNav"));
+  });
+</script>

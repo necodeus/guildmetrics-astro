@@ -1,0 +1,67 @@
+---
+import Achievement from "../components/Achievement.astro";
+import Stats from "../components/Stats.astro";
+import User from "../components/User.astro";
+import Position from "../components/Position.astro";
+
+import {
+  getUnlockedAchievements,
+  getCompletedCourses,
+} from "../utils/queries";
+
+const { user, index } = Astro.props;
+
+const achievements = getUnlockedAchievements(user.achievements);
+const courses = getCompletedCourses(user.courses);
+const pc = (user.xp_for_level / user.xp_total_for_level) * 100;
+---
+<a
+  href={`https://www.boot.dev/u/${user.handle}`}
+  target="_blank"
+  class="pt-[15px] bg-[#0c0c0c] hover:bg-[#0f0f0f] border border-white/10 block no-underline rounded-xl w-full overflow-hidden"
+>
+  <div class="flex flex-col gap-2.5 p-5 text-center">
+    <!-- <Position index={index} /> -->
+    <User
+      profileImageUrl={user.profile_image_url}
+      level={user.level}
+      name={`${user.first_name} ${user.last_name[0]}.`}
+      handle={user.handle}
+    />
+    <Stats
+      level={user.level}
+      xp={user.xp}
+      pc={pc.toFixed(2)}
+      lessons_solved={user.lessons_solved}
+      gems={user.gems}
+    />
+    {
+      achievements.length > 0 && (
+        <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
+          {achievements.map((achievement: any) => (
+            <Achievement
+              imageURL={achievement.ImageURL}
+              title={achievement.Title}
+              description={achievement.Description}
+            />
+          ))}
+        </div>
+      )
+    }
+    {
+      courses.length > 0 && (
+        <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
+          {courses.map((course: any) => (
+            <Achievement
+              imageURL={course.ThumbnailURL}
+              title={course.GenericTitle}
+              description={
+                course.RepoURL === "" ? course.TypeDescription : course.RepoURL
+              }
+            />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</a>

@@ -1,0 +1,39 @@
+---
+import lessonIcon from "../assets/lessons.svg";
+import gemIcon from "../assets/gems.webp";
+
+const {
+    level,
+    xp,
+    pc,
+    lessons_solved,
+    gems,
+} = Astro.props;
+---
+<div
+  class="flex items-center justify-center text-white text-lg font-medium h-8 gap-1"
+>
+  <span>{level} poziom</span>
+  <span class="text-sm font-normal">&middot; {xp} XP</span>
+  <span class="text-sm font-normal">&middot;</span>
+
+  <img
+    src={lessonIcon.src}
+    width="15"
+    height="15"
+    alt=" "
+    style="margin-bottom: -2px;"
+  />
+
+  <span class="text-sm font-normal">{lessons_solved}</span>
+  <span class="text-sm font-normal">&middot;</span>
+  <img src={gemIcon.src} width="20" height="20" class="-mb-1" alt="Gems" />
+  <span class="text-sm font-normal">{gems}</span>
+</div>
+<div class="w-full h-[5px] rounded-[4px] my-[10px] mt-0 bg-[#ffffff1f]">
+  <div
+    class="h-full rounded-[5px] transition-all duration-2000"
+    style={`background-blend-mode: soft-light; border-color: var(--yellow-200); background-image: url(https://www.boot.dev/_nuxt/smalltexturestone.ChOpSlRw.webp), radial-gradient(circle at 100% 100%, rgb(245, 247, 249) 10%, rgb(18, 22, 32) 70%), linear-gradient(0deg, rgb(253, 223, 143) 3.13%, rgb(238, 178, 63) 41.12%, rgb(193, 133, 0) 60.62%, rgb(238, 178, 63) 103.12%); width: ${pc}%;`}
+  >
+  </div>
+</div>
