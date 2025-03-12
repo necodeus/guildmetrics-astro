@@ -13,23 +13,10 @@ type User = {
   courses: any[];
 };
 
-import {
-  ASTRO_GUILDMETRICS_BASE_URL,
-  ASTRO_GUILDMETRICS_USER,
-  ASTRO_GUILDMETRICS_PASS,
-} from "astro:env/server";
+import { GUILDMETRICS_API_URL } from "astro:env/server";
 
 export const getUsers = async (): Promise<User[]> => {
-  const username = ASTRO_GUILDMETRICS_USER;
-  const password = ASTRO_GUILDMETRICS_PASS;
-
-  const headers: HeadersInit = {};
-  if (username && password) {
-    headers.Authorization = "Basic " + btoa(`${username}:${password}`);
-  }
-  const response = await fetch(`${ASTRO_GUILDMETRICS_BASE_URL}/users`, {
-    headers,
-  });
+  const response = await fetch(`${GUILDMETRICS_API_URL}/users`);
   let users: User[] = await response.json();
 
   users = users || [];

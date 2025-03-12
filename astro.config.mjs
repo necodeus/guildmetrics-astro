@@ -25,9 +25,7 @@ export default defineConfig({
   env: {
     schema: {
       PORT: envField.number({ context: "server", access: "public", default: 4321 }),
-      ASTRO_GUILDMETRICS_BASE_URL: envField.string({ context: "server", access: "secret" }),
-      ASTRO_GUILDMETRICS_USER: envField.string({ context: "server", access: "secret", optional: true }),
-      ASTRO_GUILDMETRICS_PASS: envField.string({ context: "server", access: "secret", optional: true }),
+      GUILDMETRICS_API_URL: envField.string({ context: "server", access: "secret" }),
     }
   },
 });
