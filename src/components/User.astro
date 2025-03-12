@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import goAvatar from '../assets/go_avatar.png'
 
 const { name, handle, level, profileImageUrl } = Astro.props;
@@ -33,10 +32,10 @@ const roleImage = rolesAvatars[Math.floor(level / 10) - 1] || "";
         />
       )
     }
-    <Image
+    <img
       src={profileImageUrl !== ""
       ? profileImageUrl
-      : goAvatar}
+      : goAvatar.src}
       alt=" "
       width="70"
       height="70"
