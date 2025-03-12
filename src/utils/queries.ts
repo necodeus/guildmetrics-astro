@@ -14,7 +14,7 @@ type User = {
 };
 
 export const getUsers = async (): Promise<User[]> => {
-  const baseURL = import.meta.env.ASTRO_GUILD_METRICS_BASE_URL;
+  const baseURL = import.meta.env.ASTRO_GUILDMETRICS_BASE_URL;
   const username = import.meta.env.ASTRO_GUILDMETRICS_USER;
   const password = import.meta.env.ASTRO_GUILDMETRICS_PASS;
 
