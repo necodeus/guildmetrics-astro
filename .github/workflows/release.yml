@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+
+      - name: install & build
+        run: |
+          npm i
+          npm run build
+
+      - name: create release
+        id: cr
+        run: |
+          chmod +x ci/create_release.sh
+          ci/./create_release.sh "${{ secrets.PAT }}" "${{ github.repository }}" "${{ github.ref_name }}"
+          echo "release_id=$(cat release_id)"
+          echo "release_id=$(cat release_id)" >> $GITHUB_OUTPUT
+
+      - name: archive
+        env:
+          RELEASE_ID: ${{ steps.cr.outputs.release_id }}
+        run: |
+          cd dist
+          tar -czf ../blog-app-astro-${{ github.ref_name }}.tar.gz *
+
+      - name: upload
+        env:
+          RELEASE_ID: ${{ steps.cr.outputs.release_id }}
+        run: |
+          chmod +x ci/upload.sh
+          echo "PAT: ${{ secrets.PAT }}"
+          echo "REPO: ${{ github.repository }}"
+          echo "RELEASE_ID: ${{ env.RELEASE_ID }}"
+          echo "VERSION: ${{ github.ref_name }}"
+          ci/./upload.sh "${{ secrets.PAT }}" "${{ github.repository }}" "${{ env.RELEASE_ID }}" "${{ github.ref_name }}"
