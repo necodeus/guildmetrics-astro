@@ -19,6 +19,10 @@ export interface HandlersAchievementResponse {
   uuid?: string;
 }
 
+export interface HandlersAchievementsHandlerResponse {
+  achievements?: HandlersAchievementResponse[];
+}
+
 export interface HandlersCourseResponse {
   description?: string;
   genericTitle?: string;
@@ -292,6 +296,24 @@ export class HttpClient<SecurityDataType = unknown> {
  * This is the API for GuildMetrics
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  achievements = {
+    /**
+     * @description Get all achievements
+     *
+     * @tags achievements
+     * @name AchievementsList
+     * @summary Get all achievements
+     * @request GET:/achievements
+     */
+    achievementsList: (params: RequestParams = {}) =>
+      this.request<HandlersAchievementsHandlerResponse[], any>({
+        path: `/achievements`,
+        method: "GET",
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   index = {
     /**
      * @description Get all data for the index page

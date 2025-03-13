@@ -8,7 +8,7 @@ import User from "../components/User.astro";
 import type { HandlersAchievementResponse, HandlersCourseResponse, HandlersIndexResponse, HandlersUserResponse } from '../myApi';
 
 const { user, achievements, courses } = Astro.props;
-const pc = (user.xp_for_level / user.xp_total_for_level) * 100;
+const pc = (user.xpForLevel / user.xpTotalForLevel) * 100;
 
 const getUserAchievements = (user: HandlersUserResponse, achievements: HandlersIndexResponse['achievements']): HandlersAchievementResponse[] => {
   if (!user.userAchievements) {
