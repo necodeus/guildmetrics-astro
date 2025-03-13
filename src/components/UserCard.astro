@@ -5,47 +5,61 @@ const { groupBy, maxBy } = lodash;
 import Achievement from "../components/Achievement.astro";
 import Stats from "../components/Stats.astro";
 import User from "../components/User.astro";
-import type { UserType } from "../utils/queries";
+import type { HandlersAchievementResponse, HandlersCourseResponse, HandlersIndexResponse, HandlersUserResponse } from '../myApi';
 
 const { user, achievements, courses } = Astro.props;
 const pc = (user.xp_for_level / user.xp_total_for_level) * 100;
 
-const getUserAchievements = (user: UserType, achievements: any) => {
-  if (!user.userAchievements) return [];
+const getUserAchievements = (user: HandlersUserResponse, achievements: HandlersIndexResponse['achievements']): HandlersAchievementResponse[] => {
+  if (!user.userAchievements) {
+    return [];
+  }
 
-  const userAchievements = user.userAchievements.map((ua: any) => {
-    const a = achievements.find((a: any) => a.uuid === ua.UUID);
+  if (!achievements) {
+    return [];
+  }
 
-    a.unlockedAt = ua.unlockedAt;
+  const userAchievements = user.userAchievements.map((userAchievement) => {
+    const matchedAchievement = achievements?.find((a) => a.uuid === userAchievement.UUID);
 
-    return a;
+    if (!matchedAchievement) {
+      return null;
+    }
+
+    return {
+      ...matchedAchievement,
+      unlockedAt: userAchievement.unlockedAt,
+    }
   });
 
-  return userAchievements;
+  return userAchievements as HandlersAchievementResponse[];
 };
 
-const getTopAchievements = (achievements: any[]) => {
+const getTopAchievements = (achievements: HandlersIndexResponse['achievements']) => {
   const grouped = groupBy(achievements, 'category');
   return Object.values(grouped).map(group => maxBy(group, 'order'));
 };
 
-const getUserCourses = (user: UserType, courses: any) => {
+const getUserCourses = (user: HandlersUserResponse, courses: HandlersCourseResponse[]) => {
   if (!user.userCourses) {
     return []
   };
 
-  const userCourses = user.userCourses.map((uc: any) => {
-    const c = courses.find((c: any) => c.uuid === uc.uuid);
-    c.completedAt = uc.completedAt;
-    return c;
+  const userCourses = user.userCourses.map((userCourse) => {
+    const matchedCourses = courses.find((c) => c.uuid === userCourse.uuid);
+
+    return {
+      ...matchedCourses,
+      completedAt: userCourse.completedAt,
+    }
   });
 
   return userCourses;
 };
 
-const userAchievements = getTopAchievements(getUserAchievements(user, achievements));
+const ua = getUserAchievements(user, achievements);
+const userAchievements = getTopAchievements(ua);
 const userCourses = getUserCourses(user, courses);
-console.log(userCourses)
 ---
 <a
   href={`https://www.boot.dev/u/${user.handle}`}

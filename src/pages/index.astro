@@ -23,32 +23,52 @@ const daysTo = (date: string) => {
 
 <Layout title="Gildia">
   <div class="mx-auto p-5 max-w-[1200px]">
-    <div class="flex text-white items-baseline mb-5 gap-2">
-      <h1 class="text-3xl font-medium text-[#fff]">{firstOrganization.name}</h1>
-      <span>@{firstOrganization.handle}</span>
-    </div>
-
-    {firstOrganization && <div id="organization" class="mb-5">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
-          <div class="text-white font-normal text-left flex flex-col gap-4">
-            <div><span class="font-semibold">Użytkownicy:</span> {firstOrganization.numUsedSeats} / {firstOrganization.numTotalSeats}</div>
+    {
+      (
+        <div class="flex text-white items-baseline mb-5 gap-2">
+          <h1 class="text-3xl font-medium text-[#fff]">
+            {firstOrganization?.name || "asdf"}
+          </h1>
+          <span>@{firstOrganization?.handle || "asdf"}</span>
+        </div>
+      )
+    }
+    {
+      firstOrganization && (
+        <div id="organization" class="mb-5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+              <div class="text-white font-normal text-left flex flex-col gap-4">
+                <div>
+                  <span class="font-semibold">Użytkownicy:</span>{" "}
+                  {firstOrganization.numUsedSeats} /{" "}
+                  {firstOrganization.numTotalSeats}
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+              <div class="text-white ont-normal text-left flex flex-col gap-4">
+                <div>
+                  <span class="font-semibold">Utworzono:</span>{" "}
+                  {daysAgo(firstOrganization?.createdAt || "")} dni temu
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+              <div
+                class="text-white
+          font-normal text-left flex flex-col gap-4"
+              >
+                <div>
+                  <span class="font-semibold">Wygasa:</span> za{" "}
+                  {daysTo(firstOrganization.expiresAt || "")} dni
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
-          <div class="text-white ont-normal text-left flex flex-col gap-4">
-            <div><span class="font-semibold">Utworzono:</span> {daysAgo(firstOrganization.createdAt)} dni temu</div>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
-          <div class="text-white
-          font-normal text-left flex flex-col gap-4">
-            <div><span class="font-semibold">Wygasa:</span> za {daysTo(firstOrganization.expiresAt)} dni</div>
-          </div>
-        </div>
-      </div>
-    </div>}
-
+      )
+    }
     <div
       id="users"
       class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
