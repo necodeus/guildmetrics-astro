@@ -1,53 +1,63 @@
-type User = {
+export type OrganizationType = {
+  name: string;
   handle: string;
-  first_name: string;
-  last_name: string;
-  profile_image_url: string;
+  numUsedSeats: number;
+  numTotalSeats: number;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export type UserType = {
+  handle: string;
+  firstName: string;
+  lastName: string;
   level: number;
   xp: number;
-  xp_for_level: number;
-  xp_total_for_level: number;
-  lessons_solved: number;
+  xpForLevel: number;
+  xpTotalForLevel: number;
+  lessonsCompleted: number;
   gems: number;
+  achievements: any[];
+  courses: any[];
+  profileImageURL: string;
+  userAchievements: any[];
+  userCourses: any[];
+};
+
+type Response = {
+  organizations: OrganizationType[];
+  users: UserType[];
   achievements: any[];
   courses: any[];
 };
 
 import { GUILDMETRICS_API_URL } from "astro:env/server";
 
-export const getUsers = async (): Promise<User[]> => {
-  const response = await fetch(`${GUILDMETRICS_API_URL}/users`);
-  let users: User[] = await response.json();
+const sortByXP = (users: UserType[] = []) => users.sort((a, b) => b.xp - a.xp);
 
-  users = users || [];
-  users = users.sort((a, b) => {
-    if (a.level > b.level) return -1;
-    if (a.level < b.level) return 1;
-    if (a.xp > b.xp) return -1;
-    if (a.xp < b.xp) return 1;
-
-    return 0;
-  });
-
-  return users;
-};
-
-export const getUnlockedAchievements = (achievements: any = []) => {
-  const unlockedAchievements = achievements
-    .filter((achievement: any) => achievement.UnlockedAt !== "")
-    .reduce((acc: any, achievement: any) => {
-      if (
-        !acc[achievement.Category] ||
-        acc[achievement.Category].Order < achievement.Order
-      ) {
-        acc[achievement.Category] = achievement;
-      }
-      return acc;
-    }, {});
-
-  return Object.values(unlockedAchievements);
-};
-
-export const getCompletedCourses = (courses: any = []) => {
-  return courses.filter((course: any) => course.CompletedAt !== "");
+export const getUsers = async (): Promise<Response> => {
+  try {
+    const response = await fetch(`${GUILDMETRICS_API_URL}/index`);
+    const {
+        organizations,
+        users,
+        achievements,
+        courses,
+    }: Response = await response.json();
+  
+    return {
+      organizations,
+      users: sortByXP(users),
+      achievements,
+      courses,
+    }
+    
+  } catch (error) {
+    return {
+      organizations: [],
+      users: [],
+      achievements: [],
+      courses: [],
+    }
+  }
 };

@@ -4,14 +4,60 @@ import Layout from "../layouts/Layout.astro";
 
 import { getUsers } from "../utils/queries";
 
-const users = await getUsers();
+const { users, organizations, achievements, courses } = await getUsers();
+
+const firstOrganization = organizations?.[0];
+
+const daysAgo = (date: string) => {
+  const d = new Date(date);
+  const diff = new Date().getTime() - d.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+};
+
+const daysTo = (date: string) => {
+  const d = new Date(date);
+  const diff = d.getTime() - new Date().getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+};
 ---
 
 <Layout title="Gildia">
   <div class="mx-auto p-5 max-w-[1200px]">
-    <h1 class="text-3xl font-medium text-[#fff] mb-5">Gildia Golang</h1>
-    <div id="users" class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {users.map((user, i) => <UserCard user={user} index={i} />)}
+    <div class="flex text-white items-baseline mb-5 gap-2">
+      <h1 class="text-3xl font-medium text-[#fff]">{firstOrganization.name}</h1>
+      <span>@{firstOrganization.handle}</span>
+    </div>
+
+    {firstOrganization && <div id="organization" class="mb-5">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+          <div class="text-white font-normal text-left flex flex-col gap-4">
+            <div><span class="font-semibold">Użytkownicy:</span> {firstOrganization.numUsedSeats} / {firstOrganization.numTotalSeats}</div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+          <div class="text-white ont-normal text-left flex flex-col gap-4">
+            <div><span class="font-semibold">Utworzono:</span> {daysAgo(firstOrganization.createdAt)} dni temu</div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2.5 p-5 text-center bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl ">
+          <div class="text-white
+          font-normal text-left flex flex-col gap-4">
+            <div><span class="font-semibold">Wygasa:</span> za {daysTo(firstOrganization.expiresAt)} dni</div>
+          </div>
+        </div>
+      </div>
+    </div>}
+
+    <div
+      id="users"
+      class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        users.map((user, i) => (
+          <UserCard user={user} achievements={achievements} courses={courses} />
+        ))
+      }
     </div>
   </div>
 </Layout>

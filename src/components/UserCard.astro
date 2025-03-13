@@ -1,19 +1,51 @@
 ---
+import lodash from 'lodash';
+const { groupBy, maxBy } = lodash;
+ 
 import Achievement from "../components/Achievement.astro";
 import Stats from "../components/Stats.astro";
 import User from "../components/User.astro";
-import Position from "../components/Position.astro";
+import type { UserType } from "../utils/queries";
 
-import {
-  getUnlockedAchievements,
-  getCompletedCourses,
-} from "../utils/queries";
-
-const { user, index } = Astro.props;
-
-const achievements = getUnlockedAchievements(user.achievements);
-const courses = getCompletedCourses(user.courses);
+const { user, achievements, courses } = Astro.props;
 const pc = (user.xp_for_level / user.xp_total_for_level) * 100;
+
+const getUserAchievements = (user: UserType, achievements: any) => {
+  if (!user.userAchievements) return [];
+
+  const userAchievements = user.userAchievements.map((ua: any) => {
+    const a = achievements.find((a: any) => a.uuid === ua.UUID);
+
+    a.unlockedAt = ua.unlockedAt;
+
+    return a;
+  });
+
+  return userAchievements;
+};
+
+const getTopAchievements = (achievements: any[]) => {
+  const grouped = groupBy(achievements, 'category');
+  return Object.values(grouped).map(group => maxBy(group, 'order'));
+};
+
+const getUserCourses = (user: UserType, courses: any) => {
+  if (!user.userCourses) {
+    return []
+  };
+
+  const userCourses = user.userCourses.map((uc: any) => {
+    const c = courses.find((c: any) => c.uuid === uc.uuid);
+    c.completedAt = uc.completedAt;
+    return c;
+  });
+
+  return userCourses;
+};
+
+const userAchievements = getTopAchievements(getUserAchievements(user, achievements));
+const userCourses = getUserCourses(user, courses);
+console.log(userCourses)
 ---
 <a
   href={`https://www.boot.dev/u/${user.handle}`}
@@ -21,45 +53,45 @@ const pc = (user.xp_for_level / user.xp_total_for_level) * 100;
   class="pt-[15px] bg-[#0c0c0c] hover:bg-[#0f0f0f] border border-white/10 block no-underline rounded-xl w-full overflow-hidden"
 >
   <div class="flex flex-col gap-2.5 p-5 text-center">
-    <!-- <Position index={index} /> -->
     <User
-      profileImageUrl={user.profile_image_url}
+      profileImageUrl={user.profileImageURL}
       level={user.level}
-      name={`${user.first_name} ${user.last_name[0]}.`}
+      name={`${user.firstName} ${user.lastName?.[0]}.`}
       handle={user.handle}
     />
     <Stats
       level={user.level}
       xp={user.xp}
       pc={pc.toFixed(2)}
-      lessons_solved={user.lessons_solved}
+      lessons_solved={user.lessonsCompleted}
       gems={user.gems}
     />
     {
-      achievements.length > 0 && (
+      userAchievements.length > 0 && (
         <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
-          {achievements.map((achievement: any) => (
-            <Achievement
-              imageURL={achievement.ImageURL}
-              title={achievement.Title}
-              description={achievement.Description}
+          {userAchievements.map((achievement: any) => {
+            if (!achievement) return null;
+            return <Achievement
+              imageURL={achievement.imageURL}
+              title={achievement.title}
+              description={achievement.description}
+              unlockedAt={achievement.unlockedAt}
             />
-          ))}
+          })}
         </div>
       )
     }
     {
-      courses.length > 0 && (
+      userCourses.length > 0 && (
         <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
-          {courses.map((course: any) => (
-            <Achievement
-              imageURL={course.ThumbnailURL}
-              title={course.GenericTitle}
-              description={
-                course.RepoURL === "" ? course.TypeDescription : course.RepoURL
-              }
+          {userCourses.map((course: any) => {
+            if (!course) return null;
+            return <Achievement
+              imageURL={course.thumbnailURL	}
+              title={course.genericTitle}
+              description={course.typeDescription}
             />
-          ))}
+          })}
         </div>
       )
     }

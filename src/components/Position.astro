@@ -1,8 +1,0 @@
----
-const classes = ["text-[#FFD700]", "text-[#C0C0C0]", "text-[#8a3e08]"];
-
-const { index } = Astro.props;
----
-<div class={`${classes[index] || "text-[#525252]"} text-base font-semibold`}>
-  #{index + 1}
-</div>
