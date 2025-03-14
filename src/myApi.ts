@@ -25,7 +25,9 @@ export interface HandlersAchievementsHandlerResponse {
 
 export interface HandlersCourseResponse {
   description?: string;
+  estimatedCompletionTimeHours?: number;
   genericTitle?: string;
+  language?: string;
   shortDescription?: string;
   slug?: string;
   status?: string;
@@ -33,6 +35,10 @@ export interface HandlersCourseResponse {
   title?: string;
   typeDescription?: string;
   uuid?: string;
+}
+
+export interface HandlersCoursesHandlerResponse {
+  courses?: HandlersCourseResponse[];
 }
 
 export interface HandlersIndexResponse {
@@ -308,6 +314,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     achievementsList: (params: RequestParams = {}) =>
       this.request<HandlersAchievementsHandlerResponse[], any>({
         path: `/achievements`,
+        method: "GET",
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  courses = {
+    /**
+     * @description Get all courses
+     *
+     * @tags courses
+     * @name CoursesList
+     * @summary Get all courses
+     * @request GET:/courses
+     */
+    coursesList: (params: RequestParams = {}) =>
+      this.request<HandlersCoursesHandlerResponse[], any>({
+        path: `/courses`,
         method: "GET",
         type: ContentType.Json,
         format: "json",

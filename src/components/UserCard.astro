@@ -2,7 +2,7 @@
 import lodash from 'lodash';
 const { groupBy, maxBy } = lodash;
  
-import Achievement from "../components/Achievement.astro";
+import UserCardItem from "../components/UserCardItem.astro";
 import Stats from "../components/Stats.astro";
 import User from "../components/User.astro";
 import type { HandlersAchievementResponse, HandlersCourseResponse, HandlersIndexResponse, HandlersUserResponse } from '../myApi';
@@ -54,6 +54,12 @@ const getUserCourses = (user: HandlersUserResponse, courses: HandlersCourseRespo
     }
   });
 
+  userCourses.sort((a, b) => {
+    if (!a.completedAt) return 1;
+    if (!b.completedAt) return -1;
+    return new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime();
+  });
+
   return userCourses;
 };
 
@@ -85,7 +91,7 @@ const userCourses = getUserCourses(user, courses);
         <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
           {userAchievements.map((achievement: any) => {
             if (!achievement) return null;
-            return <Achievement
+            return <UserCardItem
               imageURL={achievement.imageURL}
               title={achievement.title}
               description={achievement.description}
@@ -100,7 +106,7 @@ const userCourses = getUserCourses(user, courses);
         <div class="text-white text-xs font-normal text-left flex flex-col gap-4">
           {userCourses.map((course: any) => {
             if (!course) return null;
-            return <Achievement
+            return <UserCardItem
               imageURL={course.thumbnailURL	}
               title={course.genericTitle}
               description={course.typeDescription}
