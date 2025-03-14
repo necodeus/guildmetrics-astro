@@ -24,6 +24,7 @@ export interface HandlersAchievementsHandlerResponse {
 }
 
 export interface HandlersCourseResponse {
+  authorUUIDs?: string[];
   description?: string;
   estimatedCompletionTimeHours?: number;
   genericTitle?: string;

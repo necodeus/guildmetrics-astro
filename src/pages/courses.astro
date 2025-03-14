@@ -27,7 +27,7 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
             <h2 class="text-2xl font-medium text-[#fff] uppercase py-5">
               {group[0].language}
             </h2>
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">
               {group.map((course) => (
                 <CourseCard {...course} />
               ))}
@@ -41,7 +41,7 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
             <h2 class="text-2xl font-medium text-[#fff] uppercase py-5">
               Nadchodzące
             </h2>
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">
               {upcomingCourses.map((course) => (
                 <CourseCard {...course} highlight />
               ))}
