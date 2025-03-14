@@ -26,14 +26,14 @@ const teachers = [
 ---
 
 <div
-  class={`border border-white/10 no-underline rounded-xl p-5 text-white font-normal text-left bg-[#0c0c0c] border border-white/10 ${specialClasses} flex flex-col justify-between`}
+  class={`border border-white/10 no-underline rounded-xl p-5 text-white font-normal text-left bg-[#0c0c0c] border border-white/10 ${specialClasses} flex flex-col justify-between gap-5`}
 >
   <div class="flex gap-5">
     <div>
       <img
         src={thumbnailURL}
         alt={title}
-        class="min-w-[80px] min-h-[80px] block"
+        class="block min-w-[60px] min-h-[60px] max-w-[60px] max-h-[60px] sm:min-w-[80px] sm:min-h-[80px] sm:max-w-[80px] sm:max-h-[80px]"
         width="80"
         height="80"
       />
@@ -41,14 +41,15 @@ const teachers = [
     <div class="flex flex-col gap-2 flex-grow">
       <div class="text-[20px] font-medium flex gap-5 items-baseline">
         <div class="flex-grow">{genericTitle}</div>
-        <div class="text-[14px] font-[500] whitespace-nowrap text-right">
+        <div class="text-[14px] font-[400] whitespace-nowrap text-right">
           ok. {estimatedCompletionTimeHours} godz.
         </div>
       </div>
-      <div class="text-[16px]">{shortDescription}</div>
+      <div class="text-[16px] hidden sm:block">{shortDescription}</div>
     </div>
   </div>
-  <div class="mt-5 flex gap-5 justify-between">
+  <div class="text-[16px] sm:hidden">{shortDescription}</div>
+  <div class="flex gap-5 justify-between">
     <div class="break-words">
       {
         teachers.map((teacher) => {
@@ -78,7 +79,7 @@ const teachers = [
       </button> -->
       <a
         href={`https://www.boot.dev/courses/${slug}`}
-        class="px-4 py-1 bg-[#fff38e1c] rounded-md whitespace-nowrap uppercase text-[13px] font-[500] cursor-pointer"
+        class="px-4 py-1 bg-[#fff38e1c] rounded-md whitespace-nowrap text-[14px] cursor-pointer"
       >
         Przejdź do kursu {highlight ? "XD" : ""}
       </a>
