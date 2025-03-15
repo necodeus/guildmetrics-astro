@@ -17,14 +17,14 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
 
 <Layout title="Kursy">
   <div class="mx-auto p-5 max-w-[1200px]">
-    <div class="flex text-white items-baseline mb-5 gap-2">
-      <h1 class="text-3xl font-medium text-[#fff]">Kursy</h1>
+    <div class="flex items-baseline mb-5 gap-2">
+      <h1 class="text-3xl font-medium text-black dark:text-white">Kursy</h1>
     </div>
-    <div id="achievements" class="grid grid-cols-1 text-white">
+    <div id="achievements" class="grid grid-cols-1">
       {
         Object.values(groupedLiveCourses).map((group) => (
           <div>
-            <h2 class="text-2xl font-medium text-[#fff] uppercase py-5">
+            <h2 class="text-2xl font-medium text-black dark:text-white uppercase py-5">
               {group[0].language}
             </h2>
             <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">
@@ -38,7 +38,7 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
       {
         upcomingCourses.length > 0 && (
           <div>
-            <h2 class="text-2xl font-medium text-[#fff] uppercase py-5">
+            <h2 class="text-2xl font-medium text-black dark:text-white uppercase py-5">
               Nadchodzące
             </h2>
             <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">

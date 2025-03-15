@@ -13,23 +13,23 @@ const groupedAchievements = groupBy(achievements, "category");
 
 <Layout title="Osiągnięcia">
   <div class="mx-auto p-5 max-w-[1200px]">
-    <div class="flex text-white items-baseline mb-5 gap-2">
-      <h1 class="text-3xl font-medium text-[#fff]">Osiągnięcia</h1>
+    <div class="flex items-baseline mb-5 gap-2">
+      <h1 class="text-3xl font-medium text-black dark:text-white">Osiągnięcia</h1>
     </div>
-    <div id="achievements" class="grid grid-cols-1 text-white">
+    <div id="achievements" class="grid grid-cols-1">
       {
         Object.values(groupedAchievements).map((group) => {
           const currentAchievementGroup = group;
 
           return (
             <div>
-              <h2 class="text-2xl font-medium text-[#fff] uppercase py-5">
+              <h2 class="text-2xl font-medium text-black dark:text-white uppercase py-5">
                 {currentAchievementGroup[0].category}
               </h2>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {currentAchievementGroup.map((achievement) => {
                   return (
-                    <div class="bg-[#0c0c0c] border border-white/10 block no-underline rounded-xl p-5 text-white font-normal text-left flex gap-4 items-center">
+                    <div class="bg-[#f2f2f2] dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 block no-underline rounded-xl p-5 text-black dark:text-white font-normal text-left flex gap-4 items-center">
                       <div>
                         <img
                           src={achievement.imageURL}

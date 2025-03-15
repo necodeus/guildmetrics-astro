@@ -46,7 +46,23 @@ export interface HandlersIndexResponse {
   achievements?: HandlersAchievementResponse[];
   courses?: HandlersCourseResponse[];
   organizations?: HandlersOrganizationResponse[];
-  users?: HandlersUserResponse[];
+  users?: HandlersIndexUserResponse[];
+}
+
+export interface HandlersIndexUserResponse {
+  firstName?: string;
+  gems?: number;
+  handle?: string;
+  lastName?: string;
+  lessonsCompleted?: number;
+  level?: number;
+  profileImageURL?: string;
+  role?: string;
+  userAchievements?: HandlersUserAchievementResponse[];
+  userCourses?: HandlersUserCourseResponse[];
+  xp?: number;
+  xpForLevel?: number;
+  xpTotalForLevel?: number;
 }
 
 export interface HandlersOrganizationResponse {
@@ -68,7 +84,11 @@ export interface HandlersUserCourseResponse {
   uuid?: string;
 }
 
-export interface HandlersUserResponse {
+export interface HandlersUserHandlerResponse {
+  user?: HandlersUserUserResponse;
+}
+
+export interface HandlersUserUserResponse {
   firstName?: string;
   gems?: number;
   handle?: string;
@@ -351,6 +371,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     indexList: (params: RequestParams = {}) =>
       this.request<HandlersIndexResponse, any>({
         path: `/index`,
+        method: "GET",
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  user = {
+    /**
+     * @description Get user data
+     *
+     * @tags user
+     * @name UserDetail
+     * @summary Get user data
+     * @request GET:/user/{handle}
+     */
+    userDetail: (handle: string, params: RequestParams = {}) =>
+      this.request<HandlersUserHandlerResponse, any>({
+        path: `/user/${handle}`,
         method: "GET",
         type: ContentType.Json,
         format: "json",

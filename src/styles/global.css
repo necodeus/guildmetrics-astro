@@ -1,1 +1,75 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.checkbox {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-label {
+  width: 50px;
+  height: 26px;
+  border-radius: 50px;
+  position: relative;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moon {
+  width: 16px;
+  height: 16px;
+}
+
+.sun {
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-label .ball {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  transition: transform 0.2s linear;
+}
+
+html:not(.dark) .checkbox + .checkbox-label .ball {
+  transform: translateX(24px);
+}
+
+/* tło */
+
+.checkbox-label {
+  background-color:rgb(233, 233, 233);
+}
+
+html.dark .checkbox-label {
+  background-color:rgb(63, 63, 63);
+}
+
+/* kuleczka */
+
+.checkbox-label .ball {
+  background-color:rgb(211, 211, 211);
+}
+
+html.dark .checkbox-label .ball {
+  background-color:rgb(27, 27, 27);
+}
+
+/* ikony */
+
+.moon, .sun {
+  color:rgb(233, 149, 40);
+}
+
+html.dark .moon, html.dark .sun {
+  color: rgb(255, 193, 21);
+}
+

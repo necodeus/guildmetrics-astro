@@ -4,10 +4,14 @@ import NavigationMobile from "../components/NavigationMobile.astro";
 import "../styles/global.css";
 
 const { title } = Astro.props;
+
+const theme = Astro.cookies.get("theme")?.value || "dark";
+
+const themeClass = theme === "dark" ? "dark" : ""
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class={themeClass}>
   <head>
     <meta charset="UTF-8" />
     <title>{title} - guildmetrics</title>
@@ -72,7 +76,7 @@ const { title } = Astro.props;
       href="https://www.boot.dev/_nuxt/9.B-zPuvyH.png"
     />
   </head>
-  <body class="bg-[#090909] font-sans" style="font-family: 'Jost', sans-serif;">
+  <body class="bg-[#fff] dark:bg-[#090909] font-sans" style="font-family: 'Jost', sans-serif;">
     <NavigationDesktop />
     <NavigationMobile />
     <div style="padding-top: 70px;"></div>

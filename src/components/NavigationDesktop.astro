@@ -1,18 +1,23 @@
 ---
 import Logo from "./Logo.astro";
+
+const navigation = {
+  links: [
+    { href: "/", text: "Gildia" },
+    { href: "/leaders", text: "Liderzy" },
+    { href: "/achievements", text: "Osiągnięcia" },
+    { href: "/courses", text: "Kursy" },
+  ],
+}
 ---
 <div
-  style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #2525259e;"
-  class="backdrop-blur fixed top-0 left-0 w-full z-50 bg-[#000000b2] z-[1]"
+  class="backdrop-blur fixed top-0 left-0 w-full z-50 border-b pt-[15px] pb-[15px] bg-[#ffffffa8] dark:bg-[#000000b2] border-[#bbbbbb9e] dark:border-[#252525]"
 >
   <nav class="max-w-[1200px] mx-auto px-5 flex items-center justify-between">
     <Logo />
 
     <div class="hidden sm:flex gap-5">
-      <a href="/" class="text-white">Gildia</a>
-      <a href="/leaders" class="text-white">Liderzy</a>
-      <a href="/achievements" class="text-white">Osiągnięcia</a>
-      <a href="/courses" class="text-white">Kursy</a>
+      {navigation.links.map((link) => <a href={link.href} class="text-[#393939] dark:text-white">{link.text}</a>)}
     </div>
 
     <button id="hamburger" class="sm:hidden text-white focus:outline-none">

@@ -14,8 +14,6 @@ const {
   highlight,
 } = Astro.props
 
-const specialClasses = highlight ? "bg-[#fff38e1c] hover:bg-[##fff38e1c]" : "";
-
 // hardcoded because we don't have this data (yet)
 const teachers = [
   { uuid: "ea0e06ee-e101-4bdb-9ad1-865842cda5ff", name: "TJ DeVries", avatarUrl: "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3p5Cg23.jpeg" },
@@ -26,7 +24,7 @@ const teachers = [
 ---
 
 <div
-  class={`border border-white/10 no-underline rounded-xl p-5 text-white font-normal text-left bg-[#0c0c0c] border border-white/10 ${specialClasses} flex flex-col justify-between gap-5`}
+  class={`border border-black/10 dark:border-white/10 no-underline rounded-xl p-5 text-black dark:text-white font-normal text-left bg-[#f2f2f2] dark:bg-[#0c0c0c] border flex flex-col justify-between gap-5`}
 >
   <div class="flex gap-5">
     <div>
@@ -71,15 +69,9 @@ const teachers = [
       }
     </div>
     <div class="flex gap-3">
-      <!-- <button
-        class="px-3 py-1 bg-[#fff38e1c] rounded-md whitespace-nowrap cursor-pointer"
-        data-uuid={uuid}
-      >
-        Spis lekcji
-      </button> -->
       <a
         href={`https://www.boot.dev/courses/${slug}`}
-        class="px-4 py-1 bg-[#fff38e1c] rounded-md whitespace-nowrap text-[14px] cursor-pointer"
+        class="px-4 py-1 rounded-md whitespace-nowrap text-[14px] cursor-pointer bg-[#eaeaea] dark:bg-[#121212]"
       >
         Przejdź do kursu {highlight ? "XD" : ""}
       </a>
