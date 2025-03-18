@@ -6,7 +6,7 @@ const {
     unlockedAt,
 } = Astro.props
 ---
-<div class="flex items-center gap-2.5">
+<div class={`flex items-center text-left gap-2.5 ${unlockedAt ? "" : "opacity-20"}`}>
   <div>
     <img
       class="block"

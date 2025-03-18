@@ -1,16 +1,23 @@
 ---
-import lodash from 'lodash';
+import lodash from "lodash";
 const { groupBy, maxBy } = lodash;
- 
+
 import UserCardItem from "../components/UserCardItem.astro";
 import Stats from "../components/Stats.astro";
 import User from "../components/User.astro";
-import type { HandlersAchievementResponse, HandlersCourseResponse, HandlersIndexResponse, HandlersIndexUserResponse } from '../myApi';
+import type {
+  HandlersAchievementResponse,
+  HandlersIndexResponse,
+  HandlersIndexUserResponse,
+} from "../myApi";
 
 const { user, achievements, courses } = Astro.props;
 const pc = (user.xpForLevel / user.xpTotalForLevel) * 100;
 
-const getUserAchievements = (user: HandlersIndexUserResponse, achievements: HandlersIndexResponse['achievements']): HandlersAchievementResponse[] => {
+const getUserAchievements = (
+  user: HandlersIndexUserResponse,
+  achievements: HandlersIndexResponse["achievements"]
+): HandlersAchievementResponse[] => {
   if (!user.userAchievements) {
     return [];
   }
@@ -20,7 +27,9 @@ const getUserAchievements = (user: HandlersIndexUserResponse, achievements: Hand
   }
 
   const userAchievements = user.userAchievements.map((userAchievement) => {
-    const matchedAchievement = achievements?.find((a) => a.uuid === userAchievement.UUID);
+    const matchedAchievement = achievements?.find(
+      (a) => a.uuid === userAchievement.UUID
+    );
 
     if (!matchedAchievement) {
       return null;
@@ -29,44 +38,42 @@ const getUserAchievements = (user: HandlersIndexUserResponse, achievements: Hand
     return {
       ...matchedAchievement,
       unlockedAt: userAchievement.unlockedAt,
-    }
+    };
   });
 
   return userAchievements as HandlersAchievementResponse[];
 };
 
-const getTopAchievements = (achievements: HandlersIndexResponse['achievements']) => {
-  const grouped = groupBy(achievements, 'category');
-  return Object.values(grouped).map(group => maxBy(group, 'order'));
-};
+const getAchievementsByCategory = (userAchievements, allAchievements) => {
+  const grouped = groupBy(allAchievements, "category");
 
-const getUserCourses = (user: HandlersIndexUserResponse, courses: HandlersCourseResponse[]) => {
-  if (!user.userCourses) {
-    return []
-  };
+  return Object.entries(grouped).map(([category, achievements]) => {
+    const sortedAchievements = achievements.sort((a, b) => a.order - b.order);
 
-  const userCourses = user.userCourses.map((userCourse) => {
-    const matchedCourses = courses.find((c) => c.uuid === userCourse.uuid);
-
-    return {
-      ...matchedCourses,
-      completedAt: userCourse.completedAt,
-    }
+    const achievementsWithStatus = sortedAchievements.map((achievement) => {
+      const userAch = userAchievements.find(
+        (ua) => ua.uuid === achievement.uuid
+      );
+      return {
+        ...achievement,
+        unlockedAt: userAch ? userAch.unlockedAt : null,
+        unlocked: Boolean(userAch),
+      };
+    });
+    return { category, achievements: achievementsWithStatus };
   });
-
-  userCourses.sort((a, b) => {
-    if (!a.completedAt) return 1;
-    if (!b.completedAt) return -1;
-    return new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime();
-  });
-
-  return userCourses;
 };
 
 const ua = getUserAchievements(user, achievements);
-const userAchievements = getTopAchievements(ua);
-const userCourses = getUserCourses(user, courses);
+const categoryOrder = ['milestone', 'role', 'sharpshooter', 'streak', 'boss'];
+const achievementCategories = getAchievementsByCategory(ua, achievements).sort((a, b) => {
+  const indexA = categoryOrder.indexOf(a.category);
+  const indexB = categoryOrder.indexOf(b.category);
+  return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+});
+
 ---
+
 <a
   href={`/u/${user.handle}`}
   class="pt-[15px] bg-[#f2f2f2] hover:bg-[#eaeaea] dark:bg-[#0c0c0c] dark:hover:bg-[#121212] border border-black/10 dark:border-white/10 block no-underline rounded-xl w-full overflow-hidden"
@@ -85,34 +92,27 @@ const userCourses = getUserCourses(user, courses);
       lessons_solved={user.lessonsCompleted}
       gems={user.gems}
     />
+
     {
-      userAchievements.length > 0 && (
-        <div class="text-black dark:text-white text-xs font-normal text-left flex flex-col gap-4">
-          {userAchievements.map((achievement: any) => {
-            if (!achievement) return null;
-            return <UserCardItem
-              imageURL={achievement.imageURL}
-              title={achievement.title}
-              description={achievement.description}
-              unlockedAt={achievement.unlockedAt}
-            />
-          })}
-        </div>
-      )
-    }
-    {
-      userCourses.length > 0 && (
-        <div class="text-black dark:text-white text-xs font-normal text-left flex flex-col gap-4">
-          {userCourses.map((course: any) => {
-            if (!course) return null;
-            return <UserCardItem
-              imageURL={course.thumbnailURL	}
-              title={course.genericTitle}
-              description={course.typeDescription}
-            />
-          })}
-        </div>
-      )
+      achievementCategories.map((categoryGroup) => {
+        const unlockedAchievements = categoryGroup.achievements.filter(
+          (a) => a.unlocked
+        );
+        const achievementToDisplay =
+          unlockedAchievements.length > 0
+            ? maxBy(unlockedAchievements, "order")
+            : categoryGroup.achievements[0];
+
+        return (
+          <UserCardItem
+            key={achievementToDisplay.uuid}
+            imageURL={achievementToDisplay.imageURL}
+            title={achievementToDisplay.title}
+            description={achievementToDisplay.description}
+            unlockedAt={achievementToDisplay.unlockedAt}
+          />
+        );
+      })
     }
   </div>
 </a>
