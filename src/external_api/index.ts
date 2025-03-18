@@ -1,9 +1,9 @@
 import { GUILDMETRICS_API_URL } from "astro:env/server";
-import type { HandlersIndexResponse, HandlersUserResponse } from "../myApi";
+import type { HandlersIndexResponse, HandlersUserUserResponse } from "../myApi";
 
-const sortByXP = (users: HandlersUserResponse[]) => {
+const sortByXP = (users: HandlersUserUserResponse[]) => {
   return users.sort((a, b) => {
-    if (a.xp && b.xp) {
+    if (a.xp !== undefined && b.xp !== undefined) {
       return b.xp - a.xp;
     }
 
@@ -23,7 +23,7 @@ export const getUsers = async () => {
 
     return {
       organizations,
-      users: sortByXP(users || []),
+      users: users ? sortByXP(users) : [],
       achievements,
       courses,
     };

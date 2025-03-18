@@ -3,8 +3,7 @@ import Logo from "./Logo.astro";
 
 const navigation = {
   links: [
-    { href: "/", text: "Gildia" },
-    { href: "/leaders", text: "Liderzy" },
+    { href: "/", text: "Ranking" },
     { href: "/achievements", text: "Osiągnięcia" },
     { href: "/courses", text: "Kursy" },
   ],
@@ -20,7 +19,7 @@ const navigation = {
       {navigation.links.map((link) => <a href={link.href} class="text-[#393939] dark:text-white">{link.text}</a>)}
     </div>
 
-    <button id="hamburger" class="sm:hidden text-white focus:outline-none">
+    <button id="hamburger" class="sm:hidden text-black dark:text-white focus:outline-none">
       <svg
         class="w-6 h-6"
         fill="none"
