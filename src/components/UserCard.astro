@@ -78,7 +78,7 @@ const achievementCategories = getAchievementsByCategory(ua, achievements).sort((
   href={`/u/${user.handle}`}
   class="pt-[15px] bg-[#f2f2f2] hover:bg-[#eaeaea] dark:bg-[#0c0c0c] dark:hover:bg-[#121212] border border-black/10 dark:border-white/10 block no-underline rounded-xl w-full overflow-hidden"
 >
-  <div class="flex flex-col gap-2.5 p-5 text-center">
+  <div class="flex flex-col gap-2.5 p-5">
     <User
       profileImageUrl={user.profileImageURL}
       level={user.level}
@@ -93,26 +93,29 @@ const achievementCategories = getAchievementsByCategory(ua, achievements).sort((
       gems={user.gems}
     />
 
-    {
-      achievementCategories.map((categoryGroup) => {
-        const unlockedAchievements = categoryGroup.achievements.filter(
-          (a) => a.unlocked
-        );
-        const achievementToDisplay =
-          unlockedAchievements.length > 0
-            ? maxBy(unlockedAchievements, "order")
-            : categoryGroup.achievements[0];
 
-        return (
-          <UserCardItem
-            key={achievementToDisplay.uuid}
-            imageURL={achievementToDisplay.imageURL}
-            title={achievementToDisplay.title}
-            description={achievementToDisplay.description}
-            unlockedAt={achievementToDisplay.unlockedAt}
-          />
-        );
-      })
-    }
+    <div class="text-black dark:text-white text-xs font-normal text-left flex flex-col gap-4">
+      {
+        achievementCategories.map((categoryGroup) => {
+          const unlockedAchievements = categoryGroup.achievements.filter(
+            (a) => a.unlocked
+          );
+          const achievementToDisplay =
+            unlockedAchievements.length > 0
+              ? maxBy(unlockedAchievements, "order")
+              : categoryGroup.achievements[0];
+
+          return (
+            <UserCardItem
+              key={achievementToDisplay.uuid}
+              imageURL={achievementToDisplay.imageURL}
+              title={achievementToDisplay.title}
+              description={achievementToDisplay.description}
+              unlockedAt={achievementToDisplay.unlockedAt}
+            />
+          );
+        })
+      }
+    </div>
   </div>
 </a>
