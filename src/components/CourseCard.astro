@@ -10,17 +10,59 @@ const {
   uuid,
   authorUUIDs,
   language,
+  // users
+  users,
   // component
   highlight,
-} = Astro.props
+} = Astro.props;
 
 // hardcoded because we don't have this data (yet)
 const teachers = [
-  { uuid: "ea0e06ee-e101-4bdb-9ad1-865842cda5ff", name: "TJ DeVries", avatarUrl: "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3p5Cg23.jpeg" },
-  { uuid: "88baa2db-76a3-48f6-9d61-a78765e564a4", name: "ThePrimeagen", avatarUrl: "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/DVgdA9W.jpeg" },
-  { uuid: "bad00000-bad1-4bad-bad1-000000000bad", name: "Sarah Schulte", avatarUrl: "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/JPEZIHE.webp" },
-  { uuid: "db93762e-5bb7-4001-83f2-48446198dd88", name: "Lane Wagner", avatarUrl: "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/704anJ9.jpeg" },
+  {
+    uuid: "ea0e06ee-e101-4bdb-9ad1-865842cda5ff",
+    name: "TJ DeVries",
+    avatarUrl:
+      "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3p5Cg23.jpeg",
+  },
+  {
+    uuid: "88baa2db-76a3-48f6-9d61-a78765e564a4",
+    name: "ThePrimeagen",
+    avatarUrl:
+      "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/DVgdA9W.jpeg",
+  },
+  {
+    uuid: "bad00000-bad1-4bad-bad1-000000000bad",
+    name: "Sarah Schulte",
+    avatarUrl:
+      "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/JPEZIHE.webp",
+  },
+  {
+    uuid: "db93762e-5bb7-4001-83f2-48446198dd88",
+    name: "Lane Wagner",
+    avatarUrl:
+      "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/704anJ9.jpeg",
+  },
 ];
+
+function getUsersWhoCompletedCourse(courseUUID: string) {
+  const us = users.filter((user) => {
+    return user.courses?.some((course) => course.uuid === courseUUID);
+  });
+
+  return us;
+}
+
+function getCourseDate(user, courseUUID) {
+  const course = user.courses?.find((course) => course.uuid === courseUUID);
+  return course?.completedAt;
+}
+
+function dayMonth(date: string) {
+  const d = new Date(date);
+  return `${d.getDate()} ${d.toLocaleString("pl", { month: "long" })}`;
+}
+
+const usersWhoCompleted = getUsersWhoCompletedCourse(uuid);
 ---
 
 <div
@@ -38,7 +80,9 @@ const teachers = [
     </div>
     <div class="flex flex-col gap-2 flex-grow">
       <div class="flex gap-2 sm:gap-5 items-baseline">
-        <div class="text-[18px] sm:text-[20px] font-medium flex-grow">{genericTitle}</div>
+        <div class="text-[18px] sm:text-[20px] font-medium flex-grow">
+          {genericTitle}
+        </div>
         <div class="text-[14px] font-[400] whitespace-nowrap text-right">
           ok. {estimatedCompletionTimeHours} godz.
         </div>
@@ -76,5 +120,27 @@ const teachers = [
         Przejdź do kursu {highlight ? "XD" : ""}
       </a>
     </div>
+  </div>
+  <div
+    class="text-right border-t border-black/10 dark:border-white/10 pt-5 flex flex-col gap-2"
+  >
+    {
+      usersWhoCompleted?.map((user) => {
+        return (
+          <div>
+            <span class="text-[12px]">
+              {dayMonth(getCourseDate(user, uuid))}
+            </span>{" "}
+            {user.name}
+          </div>
+        );
+      })
+    }
+    {usersWhoCompleted?.length > 0 && <div>👏</div>}
+    {
+      usersWhoCompleted?.length === 0 && (
+        <div class="text-[#393939] dark:text-white">Nikt jeszcze nie ukończył tego kursu</div>
+      )
+    }
   </div>
 </div>

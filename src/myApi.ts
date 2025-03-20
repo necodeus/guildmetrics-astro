@@ -40,6 +40,7 @@ export interface HandlersCourseResponse {
 
 export interface HandlersCoursesHandlerResponse {
   courses?: HandlersCourseResponse[];
+  users?: HandlersUserWithCoursesResponse[];
 }
 
 export interface HandlersIndexResponse {
@@ -102,6 +103,13 @@ export interface HandlersUserUserResponse {
   xp?: number;
   xpForLevel?: number;
   xpTotalForLevel?: number;
+}
+
+export interface HandlersUserWithCoursesResponse {
+  courses?: HandlersUserCourseResponse[];
+  handle?: string;
+  id?: string;
+  name?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;

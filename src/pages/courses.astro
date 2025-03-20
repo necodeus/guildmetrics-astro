@@ -7,12 +7,13 @@ import Layout from "../layouts/Layout.astro";
 import { getCourses } from "../external_api/courses";
 import CourseCard from "../components/CourseCard.astro";
 
-const { courses } = await getCourses();
+const { courses, users } = await getCourses();
 
 const upcomingCourses = courses.filter((course) => course.status === "beta");
 const liveCourses = courses.filter((course) => course.status === "live");
 
 const groupedLiveCourses = groupBy(liveCourses, "language");
+
 ---
 
 <Layout title="Kursy">
@@ -29,7 +30,7 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
             </h2>
             <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">
               {group.map((course) => (
-                <CourseCard {...course} />
+                <CourseCard {...course} users={users} />
               ))}
             </div>
           </div>
@@ -43,7 +44,7 @@ const groupedLiveCourses = groupBy(liveCourses, "language");
             </h2>
             <div class="grid gap-5 grid-cols-1 lg:grid-cols-2">
               {upcomingCourses.map((course) => (
-                <CourseCard {...course} highlight />
+                <CourseCard {...course} users={users} highlight />
               ))}
             </div>
           </div>

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ~/.nvm/nvm.sh
-nvm use v20.11.0
+nvm use
 
 npx swagger-typescript-api -p http://localhost:9080/swagger/doc.json -o ./src -n myApi.ts
 
