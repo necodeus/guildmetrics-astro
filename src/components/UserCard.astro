@@ -10,6 +10,7 @@ import type {
   HandlersIndexResponse,
   HandlersIndexUserResponse,
 } from "../myApi";
+import { getImporterFilename } from "astro/content/runtime";
 
 const { user, achievements, courses } = Astro.props;
 const pc = (user.xpForLevel / user.xpTotalForLevel) * 100;
@@ -72,6 +73,14 @@ const achievementCategories = getAchievementsByCategory(ua, achievements).sort((
   return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
 });
 
+const getName = () => {
+  if (user.lastName) {
+    return  `${user.firstName} ${user.lastName?.[0]}.`
+  }
+
+  return user.firstName;
+}
+
 ---
 
 <a
@@ -84,7 +93,7 @@ const achievementCategories = getAchievementsByCategory(ua, achievements).sort((
     <User
       profileImageUrl={user.profileImageURL}
       level={user.level}
-      name={`${user.firstName} ${user.lastName?.[0]}.`}
+      name={getName()}
       handle={user.handle}
     />
     <Stats

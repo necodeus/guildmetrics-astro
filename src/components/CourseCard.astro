@@ -45,29 +45,36 @@ const teachers = [
 ];
 
 function getUsersWhoCompletedCourse(courseUUID: string) {
-  const us = users.filter((user) => {
-    return user.courses?.some((course) => course.uuid === courseUUID);
-  });
-
-  return us;
+  return users
+    .map((user) => {
+      const course = user.courses?.find((c) => c.uuid === courseUUID);
+      return course?.completedAt ? { ...user, completedAt: course.completedAt } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) =>
+      new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+    );
 }
 
-function getCourseDate(user, courseUUID) {
-  const course = user.courses?.find((course) => course.uuid === courseUUID);
-  return course?.completedAt;
-}
 
-function dayMonth(date: string) {
-  const d = new Date(date);
-  return `${d.getDate()} ${d.toLocaleString("pl", { month: "long" })}`;
+function getWord(
+  singular: string,
+  plural: string,
+  pluralException: string,
+  count: number
+): string {
+  if (count === 1) return singular;
+  const lastTwo = count % 100;
+  const lastDigit = count % 10;
+  if (lastTwo >= 12 && lastTwo <= 14) return plural;
+  if (lastDigit >= 2 && lastDigit <= 4) return pluralException;
+  return plural;
 }
 
 const usersWhoCompleted = getUsersWhoCompletedCourse(uuid);
 ---
 
-<div
-  class={`border border-black/10 dark:border-white/10 no-underline rounded-xl p-5 text-black dark:text-white font-normal text-left bg-[#f2f2f2] dark:bg-[#0c0c0c] border flex flex-col justify-between gap-5`}
->
+<div class="border border-black/10 dark:border-white/10 no-underline rounded-xl p-5 text-black dark:text-white font-normal text-left bg-[#f2f2f2] dark:bg-[#0c0c0c] flex flex-col justify-between gap-5">
   <div class="flex gap-5">
     <div>
       <img
@@ -95,10 +102,7 @@ const usersWhoCompleted = getUsersWhoCompletedCourse(uuid);
     <div class="break-words">
       {
         teachers.map((teacher) => {
-          if (teacher.uuid !== authorUUIDs?.[0]) {
-            return null;
-          }
-
+          if (teacher.uuid !== authorUUIDs?.[0]) return null;
           return (
             <div class="flex gap-2 items-center">
               <img
@@ -112,35 +116,78 @@ const usersWhoCompleted = getUsersWhoCompletedCourse(uuid);
         })
       }
     </div>
-    <div class="flex gap-3">
+  </div>
+  <div class="border-t border-black/10 dark:border-white/10 flex justify-between items-center gap-5 pt-5 text-[15px]">
+    <div class="text-left">
+      {
+        usersWhoCompleted.length > 0 ? (
+          <button
+            onclick={`showCompletions(${JSON.stringify(usersWhoCompleted)}, '${uuid}')`}
+            class="px-4 py-1 rounded-md whitespace-nowrap cursor-pointer bg-[#eaeaea] dark:bg-[#313131]"
+          >
+            {usersWhoCompleted.length} {getWord('ukończenie', 'ukonczeń', 'ukończenia', usersWhoCompleted.length)} kursu
+          </button>
+        ) : (
+          <div>Nikt jeszcze nie ukończył tego kursu</div>
+        )
+      }
+    </div>
+    <div class="text-right">
       <a
         href={`https://www.boot.dev/courses/${slug}`}
-        class="px-4 py-1 rounded-md whitespace-nowrap text-[14px] cursor-pointer bg-[#eaeaea] dark:bg-[#121212]"
+        class="px-4 py-1 rounded-md whitespace-nowrap cursor-pointer bg-[#eaeaea] dark:bg-[#313131]"
       >
         Przejdź do kursu {highlight ? "XD" : ""}
       </a>
     </div>
   </div>
-  <div
-    class="text-right border-t border-black/10 dark:border-white/10 pt-5 flex flex-col gap-2"
-  >
-    {
-      usersWhoCompleted?.map((user) => {
-        return (
-          <div>
-            <span class="text-[12px]">
-              {dayMonth(getCourseDate(user, uuid))}
-            </span>{" "}
-            {user.name}
-          </div>
-        );
-      })
-    }
-    {usersWhoCompleted?.length > 0 && <div>👏</div>}
-    {
-      usersWhoCompleted?.length === 0 && (
-        <div class="text-[#393939] dark:text-white">Nikt jeszcze nie ukończył tego kursu</div>
-      )
-    }
+</div>
+
+<div id="completedModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+  <div class="text-[black] dark:text-[white] bg-white dark:bg-[#1a1a1a] p-6 rounded-lg max-h-[80vh] w-full max-w-lg overflow-y-auto shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Ukończenia kursu</h2>
+      <button onclick="document.getElementById('completedModal').classList.add('hidden')" class="text-2xl leading-none">&times;</button>
+    </div>
+    <ul id="completedList" class="flex flex-col gap-4">
+      <li>Wczytywanie...</li>
+    </ul>
   </div>
 </div>
+
+<!-- SCRIPT -->
+<script is:inline>
+  function showCompletions(users, courseUUID) {
+    const modal = document.getElementById('completedModal');
+    const list = document.getElementById('completedList');
+    modal.classList.remove('hidden');
+
+    if (!users || users.length === 0) {
+      list.innerHTML = '<li>Brak ukończeń.</li>';
+      return;
+    }
+
+    list.innerHTML = users.map(user => {
+      const course = user.courses?.find(c => c.uuid === courseUUID);
+      const date = course?.completedAt;
+      const formattedDate = date
+        ? new Date(date).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })
+        : 'data nieznana';
+
+      return `
+        <li class="flex items-center gap-3">
+          <img src="${user.avatarUrl || 'https://www.gravatar.com/avatar?d=mp'}" class="w-8 h-8 rounded-full" />
+          <div class="flex flex-col">
+            <span class="font-medium">${user.name || 'Nieznany użytkownik'}</span>
+            <span class="text-sm">ukończono ${formattedDate}</span>
+          </div>
+        </li>
+      `;
+    }).join('');
+  }
+
+  document.addEventListener('click', (e) => {
+    const modal = document.getElementById('completedModal');
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+</script>
