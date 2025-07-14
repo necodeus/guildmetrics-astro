@@ -1,5 +1,5 @@
 import { GUILDMETRICS_API_URL } from "astro:env/server";
-import type { HandlersIndexResponse, HandlersUserUserResponse } from "../myApi";
+import type { HandlersCalendarHandlerResponse, HandlersIndexResponse, HandlersUserUserResponse } from "../myApi";
 
 const sortByXP = (users: HandlersUserUserResponse[]) => {
   return users.sort((a, b) => {
@@ -33,6 +33,21 @@ export const getUsers = async () => {
       users: [],
       achievements: [],
       courses: [],
+    };
+  }
+};
+
+export const getCalendar = async () => {
+  try {
+    const response = await fetch(`${GUILDMETRICS_API_URL}/calendar`);
+    const { userdata }: HandlersCalendarHandlerResponse = await response.json();
+
+    return {
+      userdata,
+    };
+  } catch (error) {
+    return {
+      userdata: [],
     };
   }
 };

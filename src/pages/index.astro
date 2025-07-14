@@ -1,28 +1,37 @@
 ---
 import UserCard from "../components/UserCard.astro";
 import Layout from "../layouts/Layout.astro";
+import ContributionChart from "../components/ContributionChart.tsx";
 
-import { getUsers } from "../external_api/index";
+import { getUsers, getCalendar } from "../external_api/index";
 
-const { users, organizations, achievements, courses } = await getUsers();
+const data = await getCalendar();
 
-const firstOrganization = organizations?.[0];
+const { users, achievements, courses } = await getUsers();
 
-const daysAgo = (date: string) => {
-  const d = new Date(date);
-  const diff = new Date().getTime() - d.getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-};
+// const firstOrganization = organizations?.[0];
 
-const daysTo = (date: string) => {
-  const d = new Date(date);
-  const diff = d.getTime() - new Date().getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-};
+// const daysAgo = (date: string) => {
+//   const d = new Date(date);
+//   const diff = new Date().getTime() - d.getTime();
+//   return Math.floor(diff / (1000 * 60 * 60 * 24));
+// };
+
+// const daysTo = (date: string) => {
+//   const d = new Date(date);
+//   const diff = d.getTime() - new Date().getTime();
+//   return Math.floor(diff / (1000 * 60 * 60 * 24));
+// };
+
 ---
 
 <Layout title="Użytkownicy">
   <div class="mx-auto p-5 max-w-[1200px]">
+    <h1 class="text-3xl font-bold mb-5 text-black dark:text-white">Aktywność</h1>
+    <div class="min-h-[392px] rounded-lg p-5 bg-[#f2f2f2] dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10">
+      <ContributionChart client:only="react" rawData={data.userdata} />
+    </div>
+    <h2 class="text-3xl font-bold mb-5 mt-5 text-black dark:text-white">Użytkownicy</h2>
     <div
       id="users"
       class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
