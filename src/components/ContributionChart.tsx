@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -10,23 +10,25 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import type { HandlersCombinedCalendarResponse } from "../myApi";
 
 type ContributionChartType = {
-    rawData: {
-        handle: string;
-        calendar: { date: string; count: number }[];
-    }[];
+  rawData: HandlersCombinedCalendarResponse
 };
 
 export default function ContributionChart({
   rawData,
 }: ContributionChartType) {
-  const data = mapForStackedBar(rawData);
+  const data = useMemo(() => mapForStackedBar(rawData), [rawData]);
   const months = getAvailableMonths(data);
   const [selectedMonth, setSelectedMonth] = useState(months.at(-1) ?? "");
 
   const filteredData = filterByMonth(data, selectedMonth);
-  const userKeys = Object.keys(data[0] ?? {}).filter((k) => k !== "date");
+const userKeys = useMemo(() => {
+  return Object.keys(rawData.handles || {}).filter((handle) =>
+    filteredData.some((row) => row[handle] > 0)
+  );
+}, [rawData, filteredData]);
 
   const isDark = useDarkMode();
 
@@ -63,7 +65,7 @@ export default function ContributionChart({
             <XAxis dataKey="date" hide />
             <YAxis hide />
             <Tooltip
-              content={<CustomTooltip isDark={isDark} />}
+              content={<CustomTooltip isDark={isDark} rawData={rawData} />}
               cursor={{
                 fill: isDark ? "#374151" : "#e5e7eb",
                 opacity: 0.5,
@@ -75,6 +77,7 @@ export default function ContributionChart({
                 dataKey={user}
                 stackId="1"
                 fill={`hsl(${index * 40}, 70%, 60%)`}
+                isAnimationActive={false}
                 activeBar={{
                   fillOpacity: 1,
                   stroke: isDark ? "#fff" : "#000",
@@ -99,7 +102,7 @@ function getAvailableMonths(data: Record<string, any>[]): string[] {
   return Array.from(months).sort();
 }
 
-const CustomTooltip = ({ payload, label, isDark }: any) => {
+const CustomTooltip = ({ payload, label, isDark, rawData }: any) => {
   if (!payload || !payload.length) return null;
 
   const filtered = payload.filter((entry: any) => entry.value > 0);
@@ -123,7 +126,8 @@ const CustomTooltip = ({ payload, label, isDark }: any) => {
       <ul>
         {sorted.map((entry: any, index: number) => (
           <li key={index} style={{ color: entry.color }}>
-            {entry.name}: {Math.round(entry.value)}
+            {rawData?.handles?.[entry.name] ?? entry.name}:{" "}
+            {Math.round(entry.value)}
           </li>
         ))}
       </ul>
@@ -132,39 +136,29 @@ const CustomTooltip = ({ payload, label, isDark }: any) => {
 };
 
 function mapForStackedBar(
-  users: {
-    handle: string;
-    calendar: { date: string; count: number }[];
-  }[]
+  raw: HandlersCombinedCalendarResponse
 ): Record<string, any>[] {
-  const allDates = new Set<string>();
-  const handles = users.map((u) => u.handle);
-
-  users.forEach((user) => {
-    user.calendar.forEach((d) => allDates.add(d.date));
-  });
-
-  const sortedDates = Array.from(allDates).sort();
-
   const dataByDate = new Map<string, Record<string, any>>();
-  sortedDates.forEach((date) => {
-    const row: Record<string, any> = { date };
-    handles.forEach((handle) => {
-      row[handle] = 0;
-    });
-    dataByDate.set(date, row);
-  });
+  const allHandles = Object.keys(raw.handles ?? {});
 
-  users.forEach((user) => {
-    user.calendar.forEach(({ date, count }) => {
-      const row = dataByDate.get(date);
-      if (row) {
-        row[user.handle] = count;
+  for (const month in raw.calendar) {
+    const days = raw.calendar[month];
+    for (const date in days) {
+      const handles = days[date];
+      if (!dataByDate.has(date)) {
+        const row: Record<string, any> = { date };
+        allHandles.forEach((h) => (row[h] = 0));
+        dataByDate.set(date, row);
       }
-    });
-  });
+      const row = dataByDate.get(date)!;
+      for (const handle in handles) {
+        row[handle] = handles[handle];
+      }
+    }
+  }
 
-  return Array.from(dataByDate.values());
+  const sortedDates = Array.from(dataByDate.keys()).sort();
+  return sortedDates.map((date) => dataByDate.get(date)!);
 }
 
 function filterByMonth(

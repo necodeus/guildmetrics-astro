@@ -24,24 +24,10 @@ export interface HandlersAchievementsHandlerResponse {
   achievements?: HandlersAchievementResponse[];
 }
 
-export interface HandlersCalendar {
-  count?: number;
-  date?: string;
-}
-
-export interface HandlersCalendarHandlerResponse {
-  userdata?: HandlersCalendarUserdata[];
-}
-
-export interface HandlersCalendarUserdata {
-  calendar?: HandlersCalendar[];
-  github_calendar?: HandlersGithubCalendar[];
-  handle?: string;
-}
-
-export interface HandlersContributionDays {
-  contributionCount?: number;
-  date?: string;
+export interface HandlersCombinedCalendarResponse {
+  calendar?: HandlersNestedCalendar;
+  github_calendar?: HandlersNestedCalendar;
+  handles?: Record<string, string>;
 }
 
 export interface HandlersCourseResponse {
@@ -62,10 +48,6 @@ export interface HandlersCourseResponse {
 export interface HandlersCoursesHandlerResponse {
   courses?: HandlersCourseResponse[];
   users?: HandlersUserWithCoursesResponse[];
-}
-
-export interface HandlersGithubCalendar {
-  contributionDays?: HandlersContributionDays[];
 }
 
 export interface HandlersIndexResponse {
@@ -90,6 +72,11 @@ export interface HandlersIndexUserResponse {
   xpForLevel?: number;
   xpTotalForLevel?: number;
 }
+
+export type HandlersNestedCalendar = Record<
+  string,
+  Record<string, Record<string, number>>
+>;
 
 export interface HandlersOrganizationResponse {
   createdAt?: string;
@@ -425,7 +412,7 @@ export class Api<
      * @request GET:/calendar
      */
     calendarList: (params: RequestParams = {}) =>
-      this.request<HandlersCalendarHandlerResponse[], any>({
+      this.request<HandlersCombinedCalendarResponse[], any>({
         path: `/calendar`,
         method: "GET",
         type: ContentType.Json,
