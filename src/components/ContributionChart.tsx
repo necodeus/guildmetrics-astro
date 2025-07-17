@@ -13,22 +13,20 @@ import {
 import type { HandlersCombinedCalendarResponse } from "../myApi";
 
 type ContributionChartType = {
-  rawData: HandlersCombinedCalendarResponse
+  rawData: HandlersCombinedCalendarResponse;
 };
 
-export default function ContributionChart({
-  rawData,
-}: ContributionChartType) {
+export default function ContributionChart({ rawData }: ContributionChartType) {
   const data = useMemo(() => mapForStackedBar(rawData), [rawData]);
   const months = getAvailableMonths(data);
   const [selectedMonth, setSelectedMonth] = useState(months.at(-1) ?? "");
 
   const filteredData = filterByMonth(data, selectedMonth);
-const userKeys = useMemo(() => {
-  return Object.keys(rawData.handles || {}).filter((handle) =>
-    filteredData.some((row) => row[handle] > 0)
-  );
-}, [rawData, filteredData]);
+  const userKeys = useMemo(() => {
+    return Object.keys(rawData.handles || {}).filter((handle) =>
+      filteredData.some((row) => row[handle] > 0)
+    );
+  }, [rawData, filteredData]);
 
   const isDark = useDarkMode();
 
@@ -50,7 +48,7 @@ const userKeys = useMemo(() => {
         ))}
       </div>
 
-      <div style={{ width: "100%", height: 300, }} className="min-h-[300px]">
+      <div style={{ width: "100%", height: 300 }} className="min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={filteredData}
@@ -140,9 +138,31 @@ function mapForStackedBar(
 ): Record<string, any>[] {
   const dataByDate = new Map<string, Record<string, any>>();
   const allHandles = Object.keys(raw.handles ?? {});
+  
+  const newCalendar: Record<string, Record<string, Record<string, number>>> = {};
 
-  for (const month in raw.calendar) {
-    const days = raw.calendar[month];
+  const sources = [raw.calendar, raw.github_calendar];
+  for (const source of sources) {
+    for (const month in source) {
+      if (!newCalendar[month]) {
+        newCalendar[month] = {};
+      }
+      const days = source[month];
+      for (const date in days) {
+        if (!newCalendar[month][date]) {
+          newCalendar[month][date] = {};
+        }
+        const handles = days[date];
+        for (const handle in handles) {
+          newCalendar[month][date][handle] =
+            (newCalendar[month][date][handle] ?? 0) + handles[handle];
+        }
+      }
+    }
+  }
+
+  for (const month in newCalendar) {
+    const days = newCalendar[month];
     for (const date in days) {
       const handles = days[date];
       if (!dataByDate.has(date)) {
